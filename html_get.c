@@ -95,7 +95,7 @@ void gethtml(char * buf, char * url) {
 int main() {
     char html_buf[MAX_BUF];
     char url[256];
-    strcpy(url,"http://pg.njupt.edu.cn/");
+    strcpy(url,"http://www.sjtu.edu.cn/");
     gethtml(html_buf,url);
     printf("%s",html_buf);
    return 0;
