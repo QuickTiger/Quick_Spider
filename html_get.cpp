@@ -18,7 +18,7 @@ using namespace std;
 
 
 #define PORT 80
-#define MAX_BUF 2*1024*1024*2
+#define MAX_BUF 5*1024*1024
 
 int urlparser(char * url,  char * url_host, char * url_link){
 
@@ -113,8 +113,17 @@ void insert_url(char * url , vector<string> & urls, vector<string> & urls_curren
 	if (find(urls.begin(), urls.end(), url)==urls.end()){
         urls.push_back(url);
                 if ((string(url).find(".gif",0)==string::npos)\
+                &&(string(url).find(".GIF",0)==string::npos)\
                 &&(string(url).find(".jpg",0)==string::npos)\
-                &&(string(url).find(".swf",0)==string::npos)\
+                &&(string(url).find(".JPG",0)==string::npos)\
+                &&(string(url).find(".jpeg",0)==string::npos)\
+                &&(string(url).find(".JPEG",0)==string::npos)\
+                &&(string(url).find(".RAR",0)==string::npos)\
+                &&(string(url).find(".DOC",0)==string::npos)\
+                &&(string(url).find(".zip",0)==string::npos)\
+                &&(string(url).find(".ZIP",0)==string::npos)\
+                &&(string(url).find(".jpg",0)==string::npos)\
+                &&(string(url).find(".SWF",0)==string::npos)\
                 &&(string(url).find(".doc",0)==string::npos)\
                 &&(string(url).find(".rar",0)==string::npos)){
             urls_current.push_back(url);
