@@ -7,8 +7,12 @@
 #include<stdio.h>
 #include<string.h>
 #include<errno.h>
-
+#include <asm/ioctls.h>
+#include <netinet/in.h>
 #include<netdb.h>
+#include <sys/wait.h>
+#include <sys/time.h>
+
 
 #include<algorithm>
 #include<iostream>
@@ -21,7 +25,12 @@ using namespace std;
 #define MAX_BUF 5*1024*1024
 
 int urlparser(char * url,  char * url_host, char * url_link){
-
+	if (url[0]!='h'&&url[0]!='/'){
+		return 0;
+	}
+	if (url[0]=='h'&&url[4]=='s'){
+		return 0;
+	}
 	char url_protocol[10];
     	char tmp_url[256];
     	strcpy(tmp_url,url);
@@ -61,7 +70,9 @@ int gethtml(char * buf, char * url_host, char * url_link) {
     struct timeval timeo = {5,0};//time for timeout
     socklen_t len = sizeof(timeo);
     setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, &timeo, len);
+    setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &timeo, len);
         /*Set Socket*/
+
     struct sockaddr_in address;
     address.sin_family = AF_INET;
             /*Get IP by host*/
@@ -240,16 +251,17 @@ int main() {
 	char url[256];//Url buffer(256 is a reasonable size);
 	char url_host[64];
 	char url_link[256];
-	strcpy(url,"http://youth.njupt.edu.cn/");
+	strcpy(url,"https://www.jsgqt.org/");
 
 	insert_url(url,urls,urls_current);
 	while(urls_current.begin()!=urls_current.end()){
-
+	try {
 		cout<<url<<"\n";
-		urlparser(url,url_host,url_link);
+		if (urlparser(url,url_host,url_link)==0) {
+			continue;
+		}
 
         if (0 == gethtml( html_buf, url_host, url_link )) {
-
 			html_parser(html_buf,url_host, urls, urls_current);
 		}
 		cout<<"Urls left in stack :"<<urls_current.size()<<"\t"<<"All find Urls: "<<urls.size()<<"\n";
@@ -257,6 +269,9 @@ int main() {
 		strcpy(url,urls_current.back().c_str());
 		urls_current.pop_back();
 		html_buf[0]='\0';
+		}catch(...){
+			cout<<"Catched the exception."<<endl;
+		}
     	}
    return 0;
 }
